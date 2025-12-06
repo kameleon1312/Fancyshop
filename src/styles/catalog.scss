@@ -1,0 +1,23 @@
+.catalog-shell {
+  margin-top: 12px;
+}
+
+.catalog-header {
+  margin-bottom: 14px;
+
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
