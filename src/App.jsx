@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import Navbar from "./components/NavBar";
+import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
@@ -16,7 +16,7 @@ const App = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // --- POBIERANIE PRODUKTÓW Z API ---
+  // --- POBIERANIE PRODUKTÓW ---
   useEffect(() => {
     const load = async () => {
       const data = await fetchProducts();
@@ -74,15 +74,16 @@ const App = () => {
         <Routes>
           <Route
             path="/"
-            element={
-              <Home products={products} onAddToCart={handleAddToCart} />
-            }
+            element={<Home products={products} onAddToCart={handleAddToCart} />}
           />
           <Route
             path="/catalog"
-            element={
-              <Catalog products={products} onAddToCart={handleAddToCart} />
-            }
+            element={<Catalog products={products} onAddToCart={handleAddToCart} />}
+          />
+          {/* NOWA TRASA DLA KATEGORII */}
+          <Route
+            path="/category/:categoryName"
+            element={<Catalog products={products} onAddToCart={handleAddToCart} />}
           />
           <Route
             path="/product/:id"
