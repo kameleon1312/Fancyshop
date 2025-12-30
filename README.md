@@ -7,12 +7,6 @@ Projekt skupia się na estetyce UI/UX, responsywności oraz czytelnej architektu
 
 ---
 
-## 🚀 Demo
-👉 *(opcjonalnie dodaj link)*  
-https://fancyshop-demo.vercel.app
-
----
-
 ## ✨ Funkcjonalności
 
 - 🛒 Lista produktów z dynamicznymi danymi
