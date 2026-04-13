@@ -1,114 +1,72 @@
-.categories-shell {
-  margin-top: 32px;
-  padding: 0 clamp(16px, 4vw, 32px);
-}
+.categories {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
 
-.categories-header {
-  margin-bottom: 20px;
-
-  h2 {
-    font-size: 1.35rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    margin-bottom: 6px;
-    color: #f8fafc;
-  }
-
-  p {
-    font-size: 0.88rem;
-    color: var(--muted);
-    max-width: 420px;
+    @media (max-width: 480px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 }
 
-/* --- GRID --- */
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 18px;
-}
-
-/* --- CARD --- */
 .category-card {
-  background: rgba(15, 23, 42, 0.92);
-  border-radius: 18px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  padding: 16px 14px;
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-lg);
+  padding: 20px 18px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  cursor: pointer;
-  transition: 0.22s ease;
-  position: relative;
+  text-decoration: none;
   overflow: hidden;
+  transition:
+    border-color var(--t-base) ease,
+    transform var(--t-base) var(--ease-expo);
 
-  /* Glow przy hover */
-  &::after {
-    content: "";
+  &::before {
+    content: '';
     position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      circle at 10% 0,
-      rgba(250, 204, 21, 0.18),
-      transparent 70%
-    );
+    bottom: -30px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--color-accent-tint);
+    transition: transform var(--t-slow) var(--ease-expo), opacity var(--t-slow) ease;
     opacity: 0;
-    transition: opacity 0.25s ease;
-    pointer-events: none;
   }
 
-  /* Ikona kategorii */
-  .category-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
+  &:hover {
+    border-color: var(--color-accent-dim);
+    transform: translateY(-3px);
+
+    &::before { opacity: 1; transform: scale(2.2); }
+
+    .category-card__icon { transform: scale(1.08) rotate(-4deg); }
+  }
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-sm);
+    background: var(--color-elevated);
+    border: 1px solid var(--color-border-glow);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(30, 41, 59, 0.9);
-    border: 1px solid rgba(248, 250, 252, 0.25);
-    font-size: 1.35rem;
-    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    font-size: 1.15rem;
+    transition: transform var(--t-base) var(--ease-expo);
   }
 
-  /* Tekst kategorii */
-  .category-label {
-    font-size: 0.92rem;
+  &__label {
+    font-size: 0.82rem;
     font-weight: 600;
-    letter-spacing: 0.02em;
-    color: #f1f5f9;
-    margin-top: 2px;
-  }
-
-  /* --- HOVER EFFECTS --- */
-  &:hover {
-    transform: translateY(-4px) scale(1.015);
-    border-color: var(--accent-strong);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
-
-    &::after {
-      opacity: 1;
-    }
-
-    .category-icon {
-      transform: translateY(-3px) scale(1.08);
-    }
-  }
-}
-
-/* --- RESPONSYWNOŚĆ --- */
-@media (max-width: 600px) {
-  .category-card {
-    padding: 14px 12px;
-  }
-
-  .category-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 1.2rem;
-  }
-
-  .category-label {
-    font-size: 0.85rem;
+    color: var(--color-text-1);
+    text-transform: capitalize;
+    letter-spacing: 0.01em;
+    position: relative;
+    z-index: 1;
   }
 }

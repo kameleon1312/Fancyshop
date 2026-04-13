@@ -1,273 +1,263 @@
-// ===================== Zmienne =====================
-$primary-dark: #0f172a;       // Graphite Black
-$secondary-dark: #1e293b;     // Soft Indigo Navy
-$accent-gold: #ffd700;        // Gold
-$text-light: #f8f8f8;         // Off-White
-$placeholder-gray: #94a3b8;   // Light gray
-$transition-speed: 0.3s ease-in-out;
-
-// ===================== Navbar =====================
 .navbar {
-  background-color: $primary-dark;
-  color: $text-light;
-  padding: 0.5rem 2rem;
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 1000;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6); // Głębszy cień premium
+  left: 0;
+  right: 0;
+  z-index: 150;
+  isolation: isolate;
 
-  &__inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1300px;
-    margin: 0 auto;
+  // ── Accent line ──────────────────────────────────────────────────────────
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-dim) 60%, transparent 100%);
+    opacity: 0.7;
+    pointer-events: none;
   }
 
-  // ================= LOGO =================
+  transition: background var(--t-base) ease;
+
+  &--scrolled {
+    background: rgba(6, 6, 8, 0.9);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border-bottom: 1px solid var(--color-border);
+
+    [data-theme='light'] & {
+      background: rgba(244, 241, 235, 0.92);
+    }
+  }
+
+  &__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 5vw, 60px);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  // ── Brand ─────────────────────────────────────────────────────────────────
+
   &__logo {
     display: flex;
     align-items: center;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    color: $accent-gold;
-    font-size: 1.7rem;
+    gap: 10px;
+    flex-shrink: 0;
     text-decoration: none;
-    transition: transform 0.3s ease, filter 0.3s ease;
+    margin-right: 32px;
+  }
 
-    &-icon {
-      font-size: 2.2rem;
-      margin-right: 0.6rem;
-      filter: drop-shadow(0 0 4px $accent-gold);
+  &__logo-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1.5px solid var(--color-accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: var(--color-accent-bright);
+    letter-spacing: -0.05em;
+    flex-shrink: 0;
+    transition: border-color var(--t-fast) ease;
+  }
+
+  &__logo:hover &__logo-mark {
+    border-color: var(--color-accent-bright);
+  }
+
+  &__logo-text {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-2);
+    transition: color var(--t-fast) ease;
+  }
+
+  &__logo:hover &__logo-text {
+    color: var(--color-text-1);
+  }
+
+  // ── Nav ───────────────────────────────────────────────────────────────────
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-right: auto;
+
+    @media (max-width: 768px) { display: none; }
+  }
+
+  &__link {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--color-text-3);
+    transition: color var(--t-fast) ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      opacity: 0;
+      transition: opacity var(--t-fast) ease;
     }
 
     &:hover {
-      transform: scale(1.06);
-      filter: drop-shadow(0 0 6px $accent-gold);
+      color: var(--color-text-1);
+    }
+
+    &.active {
+      color: var(--color-text-1);
+      &::after { opacity: 1; }
     }
   }
 
-  // ================= SEARCH =================
-  &__search {
-    position: relative;
-    display: flex;
-    align-items: center;
-
-    input {
-      width: 340px;
-      padding: 0.65rem 1.5rem;
-      border-radius: 25px;
-      border: 1px solid transparent;
-      outline: none;
-      font-family: 'Roboto', sans-serif;
-      font-size: 0.95rem;
-      background-color: $secondary-dark;
-      color: $text-light;
-      transition: border-color $transition-speed, box-shadow $transition-speed, background-color $transition-speed;
-
-      &::placeholder {
-        color: $placeholder-gray;
-      }
-
-      &:focus {
-        border: 1px solid $accent-gold;
-        box-shadow: 0 0 0 4px rgba($accent-gold, 0.25);
-        background-color: darken($secondary-dark, 5%);
-      }
-    }
+  &__link-num {
+    font-size: 0.58rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    letter-spacing: 0.06em;
+    color: var(--color-accent-dim);
+    line-height: 1;
+    align-self: flex-start;
+    padding-top: 1px;
   }
 
-  // ================= NAV LINKS =================
-  &__links {
-    display: flex;
-    gap: 2.2rem;
+  // ── Actions ───────────────────────────────────────────────────────────────
 
-    .navbar__link {
-      position: relative;
-      color: $text-light;
-      text-decoration: none;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
-      padding-bottom: 4px;
-      transition: color $transition-speed;
-
-      &:hover {
-        color: $accent-gold;
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 2px;
-        background-color: $accent-gold;
-        border-radius: 2px;
-        transition: width 0.3s ease;
-      }
-
-      &:hover::after {
-        width: 100%;
-      }
-
-      &--active {
-        color: $accent-gold;
-        font-weight: 600;
-        &::after {
-          width: 100%;
-        }
-      }
-    }
-  }
-
-  // ================= ACTIONS =================
   &__actions {
     display: flex;
     align-items: center;
-    gap: 1.8rem;
-
-    // ===== Cart =====
-    .navbar__cart {
-      position: relative;
-      font-size: 1.75rem;
-      color: $text-light;
-      text-decoration: none;
-      transition: transform 0.25s ease, color 0.25s ease;
-
-      &:hover {
-        transform: scale(1.12);
-        color: $accent-gold;
-      }
-
-      &-badge {
-        position: absolute;
-        top: -10px;
-        right: -10px;
-        background-color: #ff4d4d;
-        color: $text-light;
-        font-size: 0.75rem;
-        font-weight: 700;
-        min-width: 22px;
-        height: 22px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 5px;
-        border-radius: 50%;
-        box-shadow: 0 0 0 2px $primary-dark;
-        transition: transform 0.3s ease;
-
-        &--new-item {
-          animation: badge-pulse 0.5s 2;
-        }
-      }
-    }
-
-    // ===== Burger =====
-    .navbar__toggle {
-      display: none;
-      flex-direction: column;
-      justify-content: space-between;
-      width: 30px;
-      height: 20px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      z-index: 1001;
-
-      &-bar {
-        height: 3px;
-        background-color: $accent-gold;
-        border-radius: 3px;
-        transition: transform $transition-speed, opacity $transition-speed, background-color $transition-speed;
-      }
-
-      &--active {
-        .navbar__toggle-bar:first-child {
-          transform: rotate(45deg) translate(6px, 6px);
-        }
-        .navbar__toggle-bar:last-child {
-          transform: rotate(-45deg) translate(6px, -6px);
-        }
-      }
-    }
+    gap: 2px;
+    flex-shrink: 0;
   }
 
-  // ================= SEARCH MOBILE =================
-  &__search--mobile {
-    display: none;
-    padding: 0.5rem 1.5rem;
+  &__action-btn {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    color: var(--color-text-3);
+    cursor: pointer;
+    transition: all var(--t-fast) ease;
 
-    input {
-      width: 100%;
-      border-radius: 25px;
-      padding: 0.6rem 1.2rem;
-      border: 1px solid transparent;
-      background-color: $secondary-dark;
-      color: $text-light;
+    svg { width: 17px; height: 17px; }
 
-      &:focus {
-        border-color: $accent-gold;
-        box-shadow: 0 0 0 3px rgba($accent-gold, 0.3);
-        background-color: darken($secondary-dark, 5%);
-      }
-    }
-  }
-
-  // ================= MEDIA QUERIES =================
-  @media (max-width: 992px) {
-    &__search {
-      display: none;
-    }
-    &__links {
-      gap: 1.4rem;
-    }
-  }
-
-  @media (max-width: 768px) {
-    &__toggle {
-      display: flex;
+    &:hover {
+      border-color: var(--color-border);
+      background: var(--color-elevated);
+      color: var(--color-text-1);
     }
 
-    &__links {
-      flex-direction: column;
+    .badge {
       position: absolute;
-      top: 100%;
-      left: 0;
-      width: 100%;
-      background-color: $primary-dark;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.45s ease-in-out;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-
-      &--open {
-        max-height: 500px;
-      }
-
-      .navbar__link {
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid rgba($secondary-dark, 0.5);
-        &::after {
-          display: none;
-        }
-        &--active {
-          background-color: $secondary-dark;
-        }
-      }
-    }
-
-    &__search--mobile {
-      display: block;
+      top: 2px;
+      right: 2px;
+      min-width: 16px;
+      height: 16px;
+      border-radius: var(--r-full);
+      background: var(--color-accent);
+      color: #080602;
+      font-size: 0.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3px;
+      line-height: 1;
     }
   }
-}
 
-// ===================== Animacje =====================
-@keyframes badge-pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.3); }
-  100% { transform: scale(1); }
+  &__divider {
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+    margin: 0 6px;
+    flex-shrink: 0;
+  }
+
+  // ── Burger ────────────────────────────────────────────────────────────────
+
+  &__burger {
+    display: none;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-sm);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    cursor: pointer;
+
+    span {
+      display: block;
+      width: 15px;
+      height: 1.5px;
+      background: var(--color-text-2);
+      border-radius: 2px;
+      transition: transform var(--t-base) var(--ease-expo), opacity var(--t-base) ease;
+    }
+
+    &--open {
+      span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+      span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+      span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+    }
+
+    @media (max-width: 768px) { display: flex; }
+  }
+
+  // ── Mobile menu ───────────────────────────────────────────────────────────
+
+  &__mobile-menu {
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+
+    .navbar__link {
+      padding: 10px 14px;
+      border-radius: var(--r-md);
+      width: 100%;
+
+      &::after { display: none; }
+
+      &.active {
+        background: var(--color-accent-tint);
+        color: var(--color-accent-bright);
+      }
+    }
+  }
 }

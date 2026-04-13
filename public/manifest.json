@@ -1,0 +1,28 @@
+{
+  "name": "FancyShop",
+  "short_name": "FancyShop",
+  "description": "Nowoczesny sklep e-commerce — projekt portfolio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07080d",
+  "theme_color": "#07080d",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Katalog",
+      "url": "/catalog",
+      "description": "Przeglądaj wszystkie produkty"
+    },
+    {
+      "name": "Koszyk",
+      "url": "/cart",
+      "description": "Twój koszyk zakupowy"
+    }
+  ]
+}
