@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCartStore } from '@/store/cartStore';
+import { useCartStore, selectTotal } from '@/store/cartStore';
 import { formatPrice } from '@/utils/format';
+import { PageWrapper } from '@/components/ui/PageWrapper';
 import '@/styles/pages/checkout.scss';
 
 type Step = 'shipping' | 'payment' | 'confirm';
@@ -35,7 +36,8 @@ function StepIndicator({ current }: { current: Step }) {
 export function Checkout() {
   const [step, setStep] = useState<Step>('shipping');
   const [orderNum] = useState(() => Math.random().toString(36).slice(2, 10).toUpperCase());
-  const { items, total, clearCart } = useCartStore();
+  const { items, clearCart } = useCartStore();
+  const total = useCartStore(selectTotal);
 
   const handleShipping = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +69,7 @@ export function Checkout() {
   }
 
   return (
+    <PageWrapper>
     <div className="checkout">
       <div className="checkout__inner">
         <div className="checkout__header">
@@ -207,5 +210,6 @@ export function Checkout() {
         </AnimatePresence>
       </div>
     </div>
+    </PageWrapper>
   );
 }

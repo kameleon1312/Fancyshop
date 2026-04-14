@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCartStore } from '@/store/cartStore';
+import { useCartStore, selectItemCount, selectTotal } from '@/store/cartStore';
 import { formatPrice } from '@/utils/format';
 import '@/styles/ui/cart-drawer.scss';
 
 export function CartDrawer() {
-  const { isOpen, closeDrawer, items, removeItem, updateQuantity, total } = useCartStore();
+  const { isOpen, closeDrawer, items, removeItem, updateQuantity } = useCartStore();
+  const itemCount = useCartStore(selectItemCount);
+  const total     = useCartStore(selectTotal);
 
   return (
     <AnimatePresence>
@@ -30,8 +32,8 @@ export function CartDrawer() {
             <div className="cart-drawer__head">
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <h2>Koszyk</h2>
-                {items.length > 0 && (
-                  <span className="cart-drawer__head-count">{items.length}</span>
+                {itemCount > 0 && (
+                  <span className="cart-drawer__head-count">{itemCount}</span>
                 )}
               </div>
               <button className="cart-drawer__close" onClick={closeDrawer} aria-label="Zamknij koszyk">
@@ -56,15 +58,20 @@ export function CartDrawer() {
                 <div className="cart-drawer__items">
                   {items.map((item) => (
                     <div key={item.id} className="cart-drawer__item">
-                      <img src={item.image} alt={item.name} className="cart-drawer__item-img" />
+                      <img src={item.image} alt={item.name} className="cart-drawer__item-img" loading="lazy" />
                       <div className="cart-drawer__item-info">
                         <p className="cart-drawer__item-name">{item.name}</p>
-                        <p className="cart-drawer__item-price">{formatPrice(item.price)}</p>
+                        <p className="cart-drawer__item-price">
+                          {formatPrice(item.price * item.quantity)}
+                          {item.quantity > 1 && (
+                            <span className="cart-drawer__item-unit"> ({formatPrice(item.price)} × {item.quantity})</span>
+                          )}
+                        </p>
                         <div className="cart-drawer__item-controls">
                           <div className="cart-drawer__item-qty">
-                            <button onClick={() => updateQuantity(item.id, -1)}>−</button>
+                            <button onClick={() => updateQuantity(item.id, -1)} aria-label="Zmniejsz ilość">−</button>
                             <span>{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+                            <button onClick={() => updateQuantity(item.id, 1)} aria-label="Zwiększ ilość">+</button>
                           </div>
                           <button
                             className="cart-drawer__item-remove"
@@ -84,15 +91,15 @@ export function CartDrawer() {
                 <div className="cart-drawer__footer">
                   <div className="cart-drawer__summary">
                     <div className="cart-drawer__summary-row">
-                      <span>Produkty ({items.reduce((s, i) => s + i.quantity, 0)})</span>
+                      <span>Produkty ({itemCount} szt.)</span>
                       <span>{formatPrice(total)}</span>
                     </div>
                     <div className="cart-drawer__summary-row">
                       <span>Dostawa</span>
-                      <span style={{ color: 'var(--color-success)' }}>Gratis</span>
+                      <span style={{ color: 'var(--color-ok)' }}>Gratis</span>
                     </div>
                     <div className="cart-drawer__summary-row cart-drawer__summary-row--total">
-                      <span>Razem</span>
+                      <span>Łącznie</span>
                       <span>{formatPrice(total)}</span>
                     </div>
                   </div>

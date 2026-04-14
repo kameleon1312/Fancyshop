@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCartStore } from '@/store/cartStore';
+import { useCartStore, selectItemCount } from '@/store/cartStore';
 import { useUiStore } from '@/store/uiStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import '@/styles/components/navbar.scss';
@@ -10,7 +10,8 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  const { itemCount, openDrawer } = useCartStore();
+  const { openDrawer } = useCartStore();
+  const itemCount = useCartStore(selectItemCount);
   const { openSearch, toggleTheme, theme } = useUiStore();
   const wishlistCount = useWishlistStore((s) => s.items.length);
 

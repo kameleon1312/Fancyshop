@@ -16,25 +16,21 @@ interface UiStore {
 export const useUiStore = create<UiStore>()(
   persist(
     (set) => ({
-      theme: 'dark',
+      theme: 'light',
       searchOpen: false,
       toasts: [],
 
       toggleTheme: () =>
         set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
 
-      openSearch: () => set({ searchOpen: true }),
+      openSearch:  () => set({ searchOpen: true }),
       closeSearch: () => set({ searchOpen: false }),
 
       addToast: (message, type = 'success') => {
         const id = Math.random().toString(36).slice(2);
-        set((state) => ({
-          toasts: [...state.toasts, { id, message, type }],
-        }));
+        set((state) => ({ toasts: [...state.toasts, { id, message, type }] }));
         setTimeout(() => {
-          set((state) => ({
-            toasts: state.toasts.filter((t) => t.id !== id),
-          }));
+          set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
         }, 3500);
       },
 
@@ -42,7 +38,7 @@ export const useUiStore = create<UiStore>()(
         set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) })),
     }),
     {
-      name: 'fancyshop-ui',
+      name: 'fancyshop-ui-v2',
       partialize: (state) => ({ theme: state.theme }),
     }
   )

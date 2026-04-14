@@ -1,14 +1,17 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCartStore } from '@/store/cartStore';
+import { useCartStore, selectTotal } from '@/store/cartStore';
 import { formatPrice } from '@/utils/format';
+import { PageWrapper } from '@/components/ui/PageWrapper';
 import '@/styles/pages/cart.scss';
 
 export function Cart() {
-  const { items, removeItem, updateQuantity, total, clearCart } = useCartStore();
+  const { items, removeItem, updateQuantity, clearCart } = useCartStore();
+  const total = useCartStore(selectTotal);
 
   if (items.length === 0) {
     return (
+      <PageWrapper>
       <div className="cart-page">
         <div className="cart-page__inner">
           <div className="cart-page__empty">
@@ -21,10 +24,12 @@ export function Cart() {
           </div>
         </div>
       </div>
+      </PageWrapper>
     );
   }
 
   return (
+    <PageWrapper>
     <div className="cart-page">
       <div className="cart-page__inner">
         <motion.div
@@ -119,5 +124,6 @@ export function Cart() {
         </div>
       </div>
     </div>
+    </PageWrapper>
   );
 }

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { ProductCard } from '@/components/product/ProductCard';
+import { PageWrapper } from '@/components/ui/PageWrapper';
 import '@/styles/pages/wishlist.scss';
 
 export function Wishlist() {
@@ -9,6 +10,7 @@ export function Wishlist() {
 
   if (items.length === 0) {
     return (
+      <PageWrapper>
       <div className="wishlist">
         <div className="wishlist__inner">
           <div className="wishlist__empty">
@@ -21,10 +23,12 @@ export function Wishlist() {
           </div>
         </div>
       </div>
+      </PageWrapper>
     );
   }
 
   return (
+    <PageWrapper>
     <div className="wishlist">
       <div className="wishlist__inner">
         <motion.div
@@ -44,5 +48,6 @@ export function Wishlist() {
         </div>
       </div>
     </div>
+    </PageWrapper>
   );
 }

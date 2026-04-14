@@ -1,83 +1,108 @@
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { useCategories } from '@/hooks/useProducts';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { useProducts, useCategories } from '@/hooks/useProducts';
+import { ProductCardSkeleton } from '@/components/ui/Skeleton';
 import '@/styles/components/categories.scss';
 
-const CATEGORY_ICONS: Record<string, string> = {
-  electronics: '📱',
-  jewelery: '💍',
-  "men's clothing": '👔',
-  "women's clothing": '👗',
+const CATEGORY_META: Record<string, { label: string; icon: string }> = {
+  electronics:        { label: 'Elektronika',   icon: '📱' },
+  jewelery:           { label: 'Biżuteria',     icon: '💍' },
+  "men's clothing":   { label: 'Odzież męska',  icon: '👔' },
+  "women's clothing": { label: 'Odzież damska', icon: '👗' },
 };
-
-const CATEGORY_LABELS: Record<string, string> = {
-  electronics: 'Elektronika',
-  jewelery: 'Biżuteria',
-  "men's clothing": 'Odzież męska',
-  "women's clothing": 'Odzież damska',
-};
-
-interface CategoriesProps {
-  selected: string | null;
-  onSelect: (cat: string | null) => void;
-}
 
 const stagger: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.07 } },
+  show:   { transition: { staggerChildren: 0.08 } },
 };
 
-const cardVariant: Variants = {
-  hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+const cardAnim: Variants = {
+  hidden: { opacity: 0, y: 22 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
 };
 
-export function Categories({ selected, onSelect }: CategoriesProps) {
-  const { data: categories, isLoading } = useCategories();
+export function Categories() {
+  const { data: categories, isLoading: catsLoading } = useCategories();
+  const { data: products = [], isLoading: prodsLoading } = useProducts();
+
+  const thumbsByCategory = useMemo<Record<string, string[]>>(() => {
+    const map: Record<string, string[]> = {};
+    for (const p of products) {
+      if (!map[p.category]) map[p.category] = [];
+      if (map[p.category].length < 3) map[p.category].push(p.image);
+    }
+    return map;
+  }, [products]);
+
+  const countByCategory = useMemo<Record<string, number>>(() => {
+    const map: Record<string, number> = {};
+    for (const p of products) map[p.category] = (map[p.category] ?? 0) + 1;
+    return map;
+  }, [products]);
+
+  if (catsLoading || prodsLoading) {
+    return (
+      <div className="categories__grid">
+        {Array.from({ length: 4 }, (_, i) => <ProductCardSkeleton key={i} />)}
+      </div>
+    );
+  }
 
   return (
-    <div className="categories">
-      <div className="categories__grid">
-        {isLoading
-          ? Array.from({ length: 4 }, (_, i) => (
-              <div key={i} style={{ borderRadius: 'var(--r-lg)', overflow: 'hidden' }}>
-                <Skeleton height={110} />
-              </div>
-            ))
-          : (
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: '-40px' }}
-              style={{ display: 'contents' }}
+    <motion.div
+      className="categories__grid"
+      variants={stagger}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, margin: '-40px' }}
+    >
+      {(categories ?? []).map((cat) => {
+        const meta   = CATEGORY_META[cat];
+        const thumbs = thumbsByCategory[cat] ?? [];
+        const count  = countByCategory[cat] ?? 0;
+
+        return (
+          <motion.div key={cat} variants={cardAnim}>
+            <Link
+              to={`/category/${encodeURIComponent(cat)}`}
+              className="category-card"
+              aria-label={`${meta?.label ?? cat} — ${count} produktów`}
             >
-              {(categories ?? []).map((cat) => {
-                const isActive = selected === cat;
-                return (
-                  <motion.div key={cat} variants={cardVariant}>
-                    <button
-                      className={`category-card${isActive ? ' category-card--active' : ''}`}
-                      onClick={() => onSelect(isActive ? null : cat)}
-                    >
-                      <div className="category-card__icon">
-                        {CATEGORY_ICONS[cat] ?? '🛍️'}
-                      </div>
-                      <p className="category-card__label">
-                        {CATEGORY_LABELS[cat] ?? (cat.charAt(0).toUpperCase() + cat.slice(1))}
-                      </p>
-                      {isActive && (
-                        <span className="category-card__active-dot" />
-                      )}
-                    </button>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          )
-        }
-      </div>
-    </div>
+              <div className="category-card__image" aria-hidden="true">
+                {thumbs.length > 0
+                  ? (
+                    <div className="category-card__thumbs">
+                      {thumbs.map((src, i) => (
+                        <div key={i} className="category-card__thumb">
+                          <img src={src} alt="" loading="lazy" />
+                        </div>
+                      ))}
+                    </div>
+                  )
+                  : <div className="category-card__thumb-empty" />
+                }
+                <span className="category-card__overlay" aria-hidden="true">
+                  <span>Przeglądaj →</span>
+                </span>
+              </div>
+
+              <div className="category-card__info">
+                <p className="category-card__category">
+                  {meta?.icon ?? '🛍️'} &nbsp; Kategoria
+                </p>
+                <h3 className="category-card__name">
+                  {meta?.label ?? cat}
+                </h3>
+                <div className="category-card__footer">
+                  <span className="category-card__price">{count} produktów</span>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        );
+      })}
+    </motion.div>
   );
 }

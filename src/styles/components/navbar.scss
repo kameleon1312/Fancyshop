@@ -22,14 +22,14 @@
   transition: background var(--t-base) ease;
 
   &--scrolled {
-    background: rgba(6, 6, 8, 0.9);
+    background: rgba(245, 242, 235, 0.92);
     backdrop-filter: blur(24px) saturate(1.4);
     -webkit-backdrop-filter: blur(24px) saturate(1.4);
     border-bottom: 1px solid var(--color-border);
+  }
 
-    [data-theme='light'] & {
-      background: rgba(244, 241, 235, 0.92);
-    }
+  [data-theme='dark'] &--scrolled {
+    background: rgba(6, 12, 7, 0.92);
   }
 
   &__inner {

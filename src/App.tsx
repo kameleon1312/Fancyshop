@@ -8,6 +8,7 @@ import { CartDrawer } from '@/components/layout/CartDrawer';
 import { SearchOverlay } from '@/components/search/SearchOverlay';
 import { ToastContainer } from '@/components/ui/Toast';
 import { CustomCursor } from '@/components/ui/CustomCursor';
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 
 import { Home } from '@/pages/Home';
 import { Catalog } from '@/pages/Catalog';
@@ -35,18 +36,20 @@ export default function App() {
         <Navbar />
 
         <main className="app-main">
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<Home />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/category/:categoryName" element={<Catalog />} />
-              <Route path="/product/:id" element={<ProductDetails />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AnimatePresence>
+          <ErrorBoundary>
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                <Route path="/"                      element={<Home />} />
+                <Route path="/catalog"               element={<Catalog />} />
+                <Route path="/category/:categoryName" element={<Catalog />} />
+                <Route path="/product/:id"           element={<ProductDetails />} />
+                <Route path="/cart"                  element={<Cart />} />
+                <Route path="/wishlist"              element={<Wishlist />} />
+                <Route path="/checkout"              element={<Checkout />} />
+                <Route path="*"                      element={<NotFound />} />
+              </Routes>
+            </AnimatePresence>
+          </ErrorBoundary>
         </main>
 
         <Footer />

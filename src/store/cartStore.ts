@@ -4,35 +4,25 @@ import type { CartItem, Product } from '@/types';
 
 interface CartStore {
   items: CartItem[];
+  isOpen: boolean;
   addItem: (product: Product) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
   clearCart: () => void;
-  isOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
-  itemCount: number;
-  total: number;
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
-    (set, get) => ({
-      items: [],
+    (set) => ({
+      items:  [],
       isOpen: false,
 
-      get itemCount() {
-        return get().items.reduce((sum, item) => sum + item.quantity, 0);
-      },
-
-      get total() {
-        return get().items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      },
-
-      openDrawer: () => set({ isOpen: true }),
+      openDrawer:  () => set({ isOpen: true }),
       closeDrawer: () => set({ isOpen: false }),
 
-      addItem: (product) => {
+      addItem: (product) =>
         set((state) => {
           const existing = state.items.find((i) => i.id === product.id);
           if (existing) {
@@ -43,8 +33,7 @@ export const useCartStore = create<CartStore>()(
             };
           }
           return { items: [...state.items, { ...product, quantity: 1 }] };
-        });
-      },
+        }),
 
       removeItem: (id) =>
         set((state) => ({ items: state.items.filter((i) => i.id !== id) })),
@@ -52,9 +41,7 @@ export const useCartStore = create<CartStore>()(
       updateQuantity: (id, delta) =>
         set((state) => ({
           items: state.items
-            .map((i) =>
-              i.id === id ? { ...i, quantity: Math.max(0, i.quantity + delta) } : i
-            )
+            .map((i) => i.id === id ? { ...i, quantity: Math.max(0, i.quantity + delta) } : i)
             .filter((i) => i.quantity > 0),
         })),
 
@@ -62,7 +49,16 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: 'fancyshop-cart',
+      version: 1,
       partialize: (state) => ({ items: state.items }),
+      migrate: () => ({ items: [], isOpen: false }),
     }
   )
 );
+
+// Selectors — computed outside store to avoid getter issues with persist
+export const selectItemCount = (s: CartStore) =>
+  s.items.reduce((sum, i) => sum + i.quantity, 0);
+
+export const selectTotal = (s: CartStore) =>
+  s.items.reduce((sum, i) => sum + i.price * i.quantity, 0);

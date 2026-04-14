@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCartStore } from '@/store/cartStore';
@@ -14,10 +14,11 @@ interface Props {
 }
 
 function StarRating({ rate }: { rate: number }) {
+  const filled = Math.round(rate);
   return (
-    <div className="product-card__rating-stars">
+    <div className="product-card__rating-stars" aria-label={`Ocena ${rate.toFixed(1)} na 5`}>
       {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} className={`star${i < Math.round(rate) ? ' star--filled' : ''}`}>
+        <span key={i} className={`star${i < filled ? ' star--filled' : ''}`} aria-hidden="true">
           ★
         </span>
       ))}
@@ -25,7 +26,7 @@ function StarRating({ rate }: { rate: number }) {
   );
 }
 
-export function ProductCard({ product, index = 0 }: Props) {
+function ProductCardInner({ product, index = 0 }: Props) {
   const [added, setAdded] = useState(false);
   const { addItem, openDrawer } = useCartStore();
   const { toggle, has } = useWishlistStore();
@@ -35,7 +36,7 @@ export function ProductCard({ product, index = 0 }: Props) {
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     addItem(product);
-    addToast(`Dodano "${product.name.slice(0, 30)}…" do koszyka`);
+    addToast(`Dodano "${product.name.slice(0, 28)}…" do koszyka`);
     setAdded(true);
     setTimeout(() => {
       setAdded(false);
@@ -48,7 +49,7 @@ export function ProductCard({ product, index = 0 }: Props) {
     toggle(product);
     addToast(
       inWishlist ? 'Usunięto z ulubionych' : 'Dodano do ulubionych',
-      inWishlist ? 'info' : 'success'
+      inWishlist ? 'info' : 'success',
     );
   };
 
@@ -57,12 +58,20 @@ export function ProductCard({ product, index = 0 }: Props) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.45, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.45, delay: Math.min(index * 0.05, 0.3), ease: [0.16, 1, 0.3, 1] }}
     >
       <article className="product-card">
-        <Link to={`/product/${product.id}`} className="product-card__image">
-          <img src={product.image} alt={product.name} loading="lazy" />
-          <span className="product-card__quick-view">Quick view</span>
+        <Link to={`/product/${product.id}`} className="product-card__image" tabIndex={0}>
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            width={240}
+            height={240}
+          />
+          <span className="product-card__overlay" aria-hidden="true">
+            <span>Quick view</span>
+          </span>
         </Link>
 
         <button
@@ -70,7 +79,7 @@ export function ProductCard({ product, index = 0 }: Props) {
           onClick={handleWishlist}
           aria-label={inWishlist ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}
         >
-          <svg viewBox="0 0 24 24" strokeWidth="2">
+          <svg viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
             <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
           </svg>
         </button>
@@ -91,9 +100,7 @@ export function ProductCard({ product, index = 0 }: Props) {
           )}
 
           <div className="product-card__footer">
-            <p className="product-card__price">
-              {formatPrice(product.price)}
-            </p>
+            <p className="product-card__price">{formatPrice(product.price)}</p>
             <motion.button
               className={`product-card__add-btn${added ? ' product-card__add-btn--added' : ''}`}
               onClick={handleAdd}
@@ -101,11 +108,11 @@ export function ProductCard({ product, index = 0 }: Props) {
               aria-label="Dodaj do koszyka"
             >
               {added ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                   <path d="M20 6L9 17l-5-5" />
                 </svg>
               ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
               )}
@@ -116,3 +123,5 @@ export function ProductCard({ product, index = 0 }: Props) {
     </motion.div>
   );
 }
+
+export const ProductCard = memo(ProductCardInner);
