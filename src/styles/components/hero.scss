@@ -20,8 +20,9 @@
     position: relative;
     z-index: 2;
 
-    @media (max-width: 900px)  { padding: 100px 32px 48px; order: 2; }
-    @media (max-width: 480px)  { padding: 88px 24px 40px; }
+    @media (max-width: 900px)  { padding: 100px 28px 48px; order: 2; }
+    @media (max-width: 480px)  { padding: 80px 20px 36px; }
+    @media (max-width: 360px)  { padding: 76px 16px 28px; }
   }
 
   &__kicker {
@@ -49,11 +50,17 @@
 
   &__title {
     font-family: var(--font-display);
-    font-size: clamp(4.5rem, 7vw, 12rem);
+    font-size: clamp(3.2rem, 10vw, 12rem);
     font-weight: 800;
-    line-height: 0.88;
+    line-height: 0.9;
     letter-spacing: -0.03em;
-    margin-bottom: 36px;
+    margin-bottom: 28px;
+
+    @media (max-width: 480px) {
+      font-size: clamp(2.8rem, 13vw, 5.5rem);
+      margin-bottom: 20px;
+      line-height: 0.92;
+    }
   }
 
   &__title-fill {
@@ -69,12 +76,14 @@
 
   &__desc {
     font-family: var(--font-ui);
-    font-size: clamp(0.9rem, 1.3vw, 1rem);
+    font-size: clamp(0.875rem, 1.3vw, 1rem);
     font-weight: 400;
-    line-height: 1.75;
+    line-height: 1.7;
     color: rgba(255, 255, 255, 0.42);
     max-width: 360px;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
+
+    @media (max-width: 480px) { margin-bottom: 24px; max-width: 100%; }
   }
 
   &__actions {
@@ -88,6 +97,7 @@
     display: inline-flex;
     align-items: center;
     padding: 16px 40px;
+    min-height: 52px;
     background: #ffffff;
     color: var(--color-ink);
     border-radius: var(--r-full);
@@ -104,12 +114,15 @@
       box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
     }
     &:active { transform: translateY(0); }
+
+    @media (max-width: 480px) { padding: 14px 28px; font-size: 0.84rem; }
   }
 
   &__btn-ghost {
     display: inline-flex;
     align-items: center;
     padding: 15px 38px;
+    min-height: 52px;
     background: transparent;
     color: rgba(255, 255, 255, 0.65);
     border: 1.5px solid rgba(255, 255, 255, 0.22);
@@ -122,6 +135,8 @@
     transition: border-color var(--t-fast) ease, color var(--t-fast) ease;
 
     &:hover { border-color: rgba(255, 255, 255, 0.55); color: #ffffff; }
+
+    @media (max-width: 480px) { padding: 13px 26px; font-size: 0.84rem; }
   }
 
   // ── Right — visual collage ─────────────────────────────────────────────
@@ -133,10 +148,14 @@
     border-left: 1px solid rgba(255, 255, 255, 0.04);
 
     @media (max-width: 900px) {
-      min-height: 60vw;
+      min-height: 56vw;
       border-left: none;
       border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       order: 1;
+    }
+
+    @media (max-width: 480px) {
+      min-height: 72vw;
     }
   }
 

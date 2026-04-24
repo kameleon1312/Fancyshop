@@ -9,9 +9,10 @@
 
   &__header {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
     margin-bottom: 36px;
 
     h1 {
@@ -41,6 +42,11 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 18px;
+
+    @media (max-width: 520px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
   }
 
   &__empty {

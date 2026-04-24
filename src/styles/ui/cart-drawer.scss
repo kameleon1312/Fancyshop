@@ -21,6 +21,7 @@
     display: flex;
     flex-direction: column;
     box-shadow: -24px 0 80px rgba(0, 0, 0, 0.5);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   &__head {
@@ -50,8 +51,8 @@
   }
 
   &__close {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: var(--r-md);
     display: flex;
     align-items: center;
@@ -61,6 +62,7 @@
     color: var(--color-text-2);
     cursor: pointer;
     transition: all var(--t-fast) ease;
+    flex-shrink: 0;
 
     &:hover {
       background: var(--color-elevated);
@@ -73,6 +75,8 @@
   &__items {
     flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -131,11 +135,11 @@
     &-qty {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
 
       button {
-        width: 24px;
-        height: 24px;
+        width: 32px;
+        height: 32px;
         border-radius: var(--r-sm);
         border: 1px solid var(--color-border);
         background: var(--color-surface);
@@ -147,17 +151,23 @@
         cursor: pointer;
         transition: all var(--t-fast) ease;
         line-height: 1;
+        flex-shrink: 0;
 
         &:hover {
           border-color: var(--color-accent-dim);
           color: var(--color-accent);
+        }
+
+        @media (max-width: 768px) {
+          width: 36px;
+          height: 36px;
         }
       }
 
       span {
         font-size: 0.875rem;
         font-weight: 600;
-        min-width: 20px;
+        min-width: 22px;
         text-align: center;
         color: var(--color-text-1);
       }
@@ -165,8 +175,8 @@
 
     &-remove {
       margin-left: auto;
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
       border-radius: var(--r-sm);
       border: 1px solid transparent;
       background: none;
@@ -176,6 +186,7 @@
       align-items: center;
       justify-content: center;
       transition: all var(--t-fast) ease;
+      flex-shrink: 0;
 
       svg { width: 14px; height: 14px; }
 
@@ -183,6 +194,11 @@
         border-color: rgba(239, 68, 68, 0.4);
         color: #ef4444;
         background: rgba(239, 68, 68, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        width: 36px;
+        height: 36px;
       }
     }
   }

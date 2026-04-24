@@ -41,8 +41,8 @@
     flex-shrink: 0;
 
     &-num {
-      width: 30px;
-      height: 30px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       border: 2px solid var(--color-border);
       display: flex;
@@ -52,6 +52,7 @@
       font-weight: 700;
       color: var(--color-text-muted);
       transition: all var(--duration-base) ease;
+      flex-shrink: 0;
     }
 
     &-label {
@@ -167,6 +168,11 @@
     flex-wrap: wrap;
 
     .btn-primary { min-width: 160px; justify-content: center; }
+
+    @media (max-width: 400px) {
+      flex-direction: column;
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    }
   }
 
   // ── Success step ─────────────────────────────────────────

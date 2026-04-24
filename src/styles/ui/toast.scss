@@ -53,9 +53,9 @@
   }
 
   &__close {
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -66,6 +66,7 @@
     cursor: pointer;
     font-size: 1rem;
     transition: color var(--t-fast) ease;
+    margin-right: -6px;
 
     &:hover { color: var(--color-text-1); }
   }

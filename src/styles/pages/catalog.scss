@@ -38,6 +38,10 @@
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 28px;
+
+    @media (max-width: 480px) {
+      gap: 8px;
+    }
   }
 
   &__filters {
@@ -48,7 +52,8 @@
   }
 
   &__filter-btn {
-    padding: 6px 14px;
+    padding: 8px 14px;
+    min-height: 36px;
     border-radius: var(--r-full);
     border: 1px solid var(--color-border);
     background: transparent;
@@ -67,6 +72,11 @@
       color: var(--color-accent-bright);
       background: var(--color-accent-tint);
     }
+
+    @media (max-width: 768px) {
+      padding: 9px 16px;
+      min-height: 40px;
+    }
   }
 
   &__sort {
@@ -81,10 +91,13 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       white-space: nowrap;
+
+      @media (max-width: 480px) { display: none; }
     }
 
     select {
-      padding: 6px 28px 6px 12px;
+      padding: 8px 32px 8px 14px;
+      min-height: 36px;
       border-radius: var(--r-full);
       border: 1px solid var(--color-border);
       background: var(--color-surface);
@@ -99,6 +112,11 @@
       transition: border-color var(--t-fast) ease;
 
       &:focus { border-color: var(--color-accent-dim); }
+
+      @media (max-width: 768px) {
+        min-height: 40px;
+        padding: 10px 32px 10px 14px;
+      }
     }
   }
 
@@ -106,6 +124,10 @@
     display: flex;
     align-items: center;
     gap: 10px;
+
+    @media (max-width: 480px) {
+      width: 100%;
+    }
   }
 
   &__price-label {
@@ -120,27 +142,34 @@
   &__price-range {
     appearance: none;
     width: 100px;
-    height: 3px;
+    height: 4px;
     border-radius: var(--r-full);
     background: var(--color-border);
     outline: none;
     cursor: pointer;
     accent-color: var(--color-accent);
+    touch-action: pan-x;
+    flex: 1;
+
+    @media (min-width: 481px) {
+      flex: none;
+      width: 120px;
+    }
 
     &::-webkit-slider-thumb {
       appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: var(--color-accent-bright);
       border: 2px solid var(--color-surface);
-      box-shadow: 0 0 6px rgba(106, 170, 79, .5);
+      box-shadow: 0 0 6px rgba(227, 28, 37, .3);
       cursor: pointer;
     }
 
     &::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: var(--color-accent-bright);
       border: 2px solid var(--color-surface);

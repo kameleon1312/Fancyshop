@@ -31,7 +31,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      padding: 24px;
+      padding: clamp(12px, 3vw, 24px);
       transition: transform var(--t-slow) var(--ease-expo);
     }
   }
@@ -61,10 +61,10 @@
 
   &__wishlist {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 32px;
-    height: 32px;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
     border-radius: var(--r-full);
     background: rgba(255, 255, 255, 0.88);
     border: none;
@@ -97,15 +97,27 @@
       animation: heart-burst var(--t-base) var(--ease-back);
       svg { stroke: #ffffff; fill: #ffffff; }
     }
+
+    @media (max-width: 768px) {
+      width: 44px;
+      height: 44px;
+      top: 8px;
+      right: 8px;
+      svg { width: 16px; height: 16px; }
+    }
   }
 
   // ── Info ───────────────────────────────────────────────────────────────
 
   &__info {
-    padding: 16px 18px 18px;
+    padding: 12px 14px 14px;
     display: flex;
     flex-direction: column;
     flex: 1;
+
+    @media (min-width: 769px) {
+      padding: 16px 18px 18px;
+    }
   }
 
   &__category {
@@ -150,8 +162,8 @@
   }
 
   &__add-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: var(--r-full);
     border: 1.5px solid var(--color-border);
     background: transparent;
@@ -175,6 +187,12 @@
       border-color: var(--color-ok);
       color: #ffffff;
       background: var(--color-ok);
+    }
+
+    @media (max-width: 768px) {
+      width: 44px;
+      height: 44px;
+      svg { width: 17px; height: 17px; }
     }
   }
 }
