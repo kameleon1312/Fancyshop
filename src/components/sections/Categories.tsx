@@ -1,27 +1,18 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import type { Variants } from 'framer-motion';
 import { useProducts, useCategories } from '@/hooks/useProducts';
 import { ProductCardSkeleton } from '@/components/ui/Skeleton';
 import '@/styles/components/categories.scss';
 
-const CATEGORY_META: Record<string, { label: string; icon: string }> = {
-  electronics:        { label: 'Elektronika',   icon: '📱' },
-  jewelery:           { label: 'Biżuteria',     icon: '💍' },
-  "men's clothing":   { label: 'Odzież męska',  icon: '👔' },
-  "women's clothing": { label: 'Odzież damska', icon: '👗' },
+const CATEGORY_META: Record<string, { label: string; short: string }> = {
+  electronics:        { label: 'Elektronika',   short: 'Gadżety & tech'   },
+  jewelery:           { label: 'Biżuteria',     short: 'Złoto & srebro'   },
+  "men's clothing":   { label: 'Odzież Męska',  short: 'Styl codzienny'   },
+  "women's clothing": { label: 'Odzież Damska', short: 'Moda kobieca'     },
 };
 
-const stagger: Variants = {
-  hidden: {},
-  show:   { transition: { staggerChildren: 0.08 } },
-};
-
-const cardAnim: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
-};
+const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export function Categories() {
   const { data: categories, isLoading: catsLoading } = useCategories();
@@ -51,58 +42,55 @@ export function Categories() {
   }
 
   return (
-    <motion.div
-      className="categories__grid"
-      variants={stagger}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: '-40px' }}
-    >
-      {(categories ?? []).map((cat) => {
+    <div className="categories__grid">
+      {(categories ?? []).map((cat, i) => {
         const meta   = CATEGORY_META[cat];
         const thumbs = thumbsByCategory[cat] ?? [];
         const count  = countByCategory[cat] ?? 0;
 
         return (
-          <motion.div key={cat} variants={cardAnim}>
+          <motion.div
+            key={cat}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: i * 0.08, ease: EASE }}
+          >
             <Link
               to={`/category/${encodeURIComponent(cat)}`}
               className="category-card"
               aria-label={`${meta?.label ?? cat} — ${count} produktów`}
             >
               <div className="category-card__image" aria-hidden="true">
-                {thumbs.length > 0
-                  ? (
-                    <div className="category-card__thumbs">
-                      {thumbs.map((src, i) => (
-                        <div key={i} className="category-card__thumb">
-                          <img src={src} alt="" loading="lazy" />
-                        </div>
-                      ))}
-                    </div>
-                  )
-                  : <div className="category-card__thumb-empty" />
-                }
+                {thumbs.length > 0 ? (
+                  <div className="category-card__thumbs">
+                    {thumbs.map((src, idx) => (
+                      <div key={idx} className="category-card__thumb">
+                        <img src={src} alt="" loading="lazy" decoding="async" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="category-card__thumb-empty" />
+                )}
                 <span className="category-card__overlay" aria-hidden="true">
-                  <span>Przeglądaj →</span>
+                  <span>Przeglądaj</span>
                 </span>
               </div>
 
               <div className="category-card__info">
-                <p className="category-card__category">
-                  {meta?.icon ?? '🛍️'} &nbsp; Kategoria
-                </p>
-                <h3 className="category-card__name">
-                  {meta?.label ?? cat}
-                </h3>
-                <div className="category-card__footer">
-                  <span className="category-card__price">{count} produktów</span>
+                <div className="category-card__text">
+                  <p className="category-card__category">{meta?.short ?? 'Kategoria'}</p>
+                  <h3 className="category-card__name">{meta?.label ?? cat}</h3>
+                </div>
+                <div className="category-card__side">
+                  <p className="category-card__count">{count} szt.</p>
+                  <span className="category-card__arrow" aria-hidden="true">→</span>
                 </div>
               </div>
             </Link>
           </motion.div>
         );
       })}
-    </motion.div>
+    </div>
   );
 }

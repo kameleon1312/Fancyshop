@@ -13,19 +13,6 @@ interface Props {
   index?: number;
 }
 
-function StarRating({ rate }: { rate: number }) {
-  const filled = Math.round(rate);
-  return (
-    <div className="product-card__rating-stars" aria-label={`Ocena ${rate.toFixed(1)} na 5`}>
-      {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} className={`star${i < filled ? ' star--filled' : ''}`} aria-hidden="true">
-          ★
-        </span>
-      ))}
-    </div>
-  );
-}
-
 function ProductCardInner({ product, index = 0 }: Props) {
   const [added, setAdded] = useState(false);
   const { addItem, openDrawer } = useCartStore();
@@ -56,9 +43,12 @@ function ProductCardInner({ product, index = 0 }: Props) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.45, delay: Math.min(index * 0.05, 0.3), ease: [0.16, 1, 0.3, 1] }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.5,
+        delay: Math.min(index * 0.05, 0.35),
+        ease: [0.16, 1, 0.3, 1],
+      }}
     >
       <article className="product-card">
         <Link to={`/product/${product.id}`} className="product-card__image" tabIndex={0}>
@@ -66,6 +56,7 @@ function ProductCardInner({ product, index = 0 }: Props) {
             src={product.image}
             alt={product.name}
             loading="lazy"
+            decoding="async"
             width={240}
             height={240}
           />
@@ -90,15 +81,6 @@ function ProductCardInner({ product, index = 0 }: Props) {
             <h3 className="product-card__name">{product.name}</h3>
           </Link>
 
-          {product.rating && (
-            <div className="product-card__rating">
-              <StarRating rate={product.rating.rate} />
-              <span className="product-card__rating-count">
-                {product.rating.rate.toFixed(1)} ({product.rating.count})
-              </span>
-            </div>
-          )}
-
           <div className="product-card__footer">
             <p className="product-card__price">{formatPrice(product.price)}</p>
             <motion.button
@@ -113,7 +95,8 @@ function ProductCardInner({ product, index = 0 }: Props) {
                 </svg>
               ) : (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                  <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
               )}
             </motion.button>

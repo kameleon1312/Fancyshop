@@ -1,131 +1,137 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import type { Variants } from 'framer-motion';
+import { useProducts } from '@/hooks/useProducts';
 import '@/styles/components/hero.scss';
 
-const MARQUEE_ITEMS = [
-  'Elektronika', 'Biżuteria', 'Odzież damska', 'Odzież męska',
-  'Bezpłatna dostawa', 'Zwrot 30 dni', 'Bezpieczne płatności',
-  'Elektronika', 'Biżuteria', 'Odzież damska', 'Odzież męska',
-  'Bezpłatna dostawa', 'Zwrot 30 dni', 'Bezpieczne płatności',
-];
+const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%_';
 
-const STATS = [
-  { value: '200+', label: 'produktów' },
-  { value: '4', label: 'kategorie' },
-  { value: '30', label: 'dni na zwrot' },
-];
-
-const lineIn: Variants = {
-  hidden: { scaleX: 0, originX: 0 },
-  show: { scaleX: 1, transition: { duration: 0.9, ease: 'easeInOut', delay: 0.6 } },
-};
-
-export function Hero() {
-  const titleRef = useRef<HTMLHeadingElement>(null);
+function useMatrixScramble(target: string, startDelay = 0): string {
+  const [output, setOutput] = useState(() =>
+    Array.from(target).map((c) => (c === ' ' || c === '.' ? c : '_')).join(''),
+  );
 
   useEffect(() => {
-    const el = titleRef.current;
-    if (!el) return;
-    el.style.opacity = '1';
-  }, []);
+    let timerId: ReturnType<typeof setTimeout>;
+    let intervalId: ReturnType<typeof setInterval>;
+
+    timerId = setTimeout(() => {
+      let frame = 0;
+      const FPC = 4;
+
+      intervalId = setInterval(() => {
+        const next = Array.from(target)
+          .map((char, i) => {
+            if (char === ' ') return ' ';
+            if (char === '.') return frame >= i * FPC + FPC ? '.' : '_';
+            const settlesAt = i * FPC + FPC;
+            if (frame >= settlesAt) return char;
+            return CHARS[Math.floor(Math.random() * CHARS.length)];
+          })
+          .join('');
+
+        setOutput(next);
+        frame++;
+
+        if (frame > (target.length - 1) * FPC + FPC + 3) {
+          setOutput(target);
+          clearInterval(intervalId);
+        }
+      }, 55);
+    }, startDelay);
+
+    return () => {
+      clearTimeout(timerId);
+      clearInterval(intervalId);
+    };
+  }, [target, startDelay]);
+
+  return output;
+}
+
+export function Hero() {
+  const { data: products } = useProducts();
+  const visual = products?.slice(0, 3) ?? [];
+
+  const line1 = useMatrixScramble('NOWY', 200);
+  const line2 = useMatrixScramble('STANDARD.', 700);
 
   return (
-    <section className="hero">
+    <section className="hero" aria-label="Hero">
 
-      <div className="hero__corner hero__corner--tl">
-        <span className="hero__label">FancyShop</span>
-        <span className="hero__label hero__label--muted">est. 2025</span>
-      </div>
-
-      <div className="hero__corner hero__corner--tr">
-        <span className="hero__label hero__label--muted">№ 001</span>
-      </div>
-
-      <div className="hero__center">
-        <motion.h1
-          ref={titleRef}
-          className="hero__title"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.01 }}
-        >
-          <motion.span
-            className="hero__title-line hero__title-line--serif"
-            initial={{ y: '110%' }}
-            animate={{ y: '0%' }}
-            transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
-          >
-            Fine
-          </motion.span>
-          <motion.span
-            className="hero__title-line hero__title-line--sans"
-            initial={{ y: '110%' }}
-            animate={{ y: '0%' }}
-            transition={{ duration: 1.0, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-          >
-            Goods.
-          </motion.span>
-        </motion.h1>
-
-        <motion.div
-          className="hero__rule"
-          variants={lineIn}
-          initial="hidden"
-          animate="show"
-        />
-      </div>
-
-      <div className="hero__bottom">
-        <motion.div
-          className="hero__bottom-left"
-          initial={{ opacity: 0, y: 16 }}
+      {/* ── Left — content ────────────────────────────────────────────── */}
+      <motion.div
+        className="hero__content"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, ease: EASE }}
+      >
+        <motion.span
+          className="hero__kicker"
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.85, ease: 'easeOut' }}
+          transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
         >
-          <p className="hero__desc">
-            Starannie dobrana kolekcja elektroniki, biżuterii
-            i&nbsp;odzieży — dla tych, którzy wiedzą czego chcą.
-          </p>
-          <div className="hero__actions">
-            <Link to="/catalog" className="btn-primary">
-              Odkryj kolekcję
-            </Link>
-            <Link to="/catalog?category=electronics" className="btn-ghost">
-              Elektronika
-            </Link>
-          </div>
-        </motion.div>
+          Premium Shop &mdash; 2025
+        </motion.span>
+
+        <h1 className="hero__title" aria-label="Nowy Standard.">
+          <span className="hero__title-fill" aria-hidden="true">{line1}</span>
+          <span className="hero__title-stroke" aria-hidden="true">{line2}</span>
+        </h1>
+
+        <motion.p
+          className="hero__desc"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 1.5, ease: 'easeOut' }}
+        >
+          Odkryj starannie dobrane produkty premium — elektronika,
+          biżuteria i&nbsp;odzież dla wymagających.
+        </motion.p>
 
         <motion.div
-          className="hero__stats"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 1.0 }}
+          className="hero__actions"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 1.7, ease: 'easeOut' }}
         >
-          {STATS.map((s) => (
-            <div key={s.label} className="hero__stat">
-              <strong>{s.value}</strong>
-              <span>{s.label}</span>
-            </div>
-          ))}
+          <Link to="/catalog" className="hero__btn-primary">Kup teraz</Link>
+          <Link to="/catalog" className="hero__btn-ghost">Przeglądaj kolekcję</Link>
         </motion.div>
+      </motion.div>
+
+      {/* ── Right — product collage ────────────────────────────────────── */}
+      <div className="hero__visual" aria-hidden="true">
+        {visual.length > 0 ? (
+          <div className="hero__grid">
+            {visual.map((p, i) => (
+              <motion.div
+                key={p.id}
+                className="hero__grid-item"
+                initial={{ opacity: 0, scale: 0.94 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.1, delay: 0.3 + i * 0.18, ease: EASE }}
+              >
+                <img
+                  src={p.image}
+                  alt=""
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                />
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="hero__grid-placeholder" />
+        )}
       </div>
 
-      <div className="hero__side-text" aria-hidden="true">
-        <span>scroll</span>
-        <span className="hero__scroll-line" />
-      </div>
-
-      <div className="hero__marquee">
-        <div className="hero__marquee-track">
-          {MARQUEE_ITEMS.map((text, i) => (
-            <span key={i} className="hero__marquee-item">
-              {text}
-            </span>
-          ))}
-        </div>
+      {/* ── Scroll hint ───────────────────────────────────────────────── */}
+      <div className="hero__scroll-hint" aria-hidden="true">
+        <div className="hero__scroll-dot" />
+        <span className="hero__scroll-label">Scroll</span>
       </div>
 
     </section>
